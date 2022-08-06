@@ -16,13 +16,6 @@ pipeline {
                       volumeMounts:
                         - name: jenkins-docker-cfg
                           mountPath: /kaniko/.docker
-                    - name: crane
-                      image: gcr.io/go-containerregistry/crane:debug
-                      imagePullPolicy: Always
-                      command:
-                      - sleep
-                      args:
-                      - 99d
                     volumes:
                     - name: jenkins-docker-cfg
                       projected:
