@@ -6,9 +6,11 @@ pipeline {
     }
     agent any
     stages {
-        steps {
-            script{
-                checkout scm
+        stage('Clone repository') {
+            steps {
+                script{
+                    checkout scm
+                }
             }
         }
 
