@@ -52,20 +52,20 @@ pipeline {
             }
         }
 
-        #stage('Anchore analyse') {
-        #    steps {
-        #        writeFile file: 'anchore_images', text: 'docker.io/lsvazquez/litecoin'
-        #        anchore name: 'anchore_images'
-        #    }
-        #}
+        //stage('Anchore analyse') {
+        //    steps {
+        //        writeFile file: 'anchore_images', text: 'docker.io/lsvazquez/litecoin'
+        //        anchore name: 'anchore_images'
+        //    }
+        //}
 
-        #stage('Push image') {
-        #    steps {
-        #        container('kaniko') {
-        #            sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --no-push --tarPath image.tar --skip-tls-verify --cache=true --destination=lsvazquez/litecoin:latest'
-        #        }
-        #    }
-        #}
+        //stage('Push image') {
+        //    steps {
+        //        container('kaniko') {
+        //            sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --no-push --tarPath image.tar --skip-tls-verify --cache=true --destination=lsvazquez/litecoin:latest'
+        //        }
+        //    }
+        //}
 
         stage('Deploy to K8s') {
             steps {
