@@ -1,5 +1,6 @@
 FROM debian:stretch-slim
 
+# create a user to be used instead of root
 RUN groupadd -r litecoin && useradd -r -m -g litecoin litecoin
 
 RUN set -ex \
@@ -33,10 +34,11 @@ RUN mkdir "$LITECOIN_DATA" \
 VOLUME /data
 
 # scan with trivy
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin \
-    && trivy filesystem --exit-code 1 --no-progress /
+#RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin \
+#    && trivy filesystem --exit-code 1 --no-progress /
 
 COPY entrypoint.sh /entrypoint.sh
+RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 9332
