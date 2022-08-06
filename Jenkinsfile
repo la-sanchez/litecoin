@@ -31,9 +31,9 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                script {
-                    checkout scm
-                }
+                git branch: main,
+                    credentialsId: litecoin_ssh,
+                        url: 'git@github.com:la-sanchez/litecoin.git'
             }
         }
 

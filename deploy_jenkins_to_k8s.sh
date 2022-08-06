@@ -6,7 +6,7 @@
  kubectl create ns jenkins
  helm upgrade --install jenkins -n jenkins jenkins/jenkins
 
- kubectl create secret docker-registry dockercred \
+ kubectl create secret -n jenkins docker-registry dockercred \
     --docker-server=https://index.docker.io/v1/ \
     --docker-username=lsvazquez \
     --docker-password=dckr_pat_zHeGlnrUcUmD_YI60oTWe39H4KE\
