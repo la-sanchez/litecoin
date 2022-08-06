@@ -1,56 +1,71 @@
 pipeline {
-    environment {
-        REGISTRY = "lsvazquez/litecoin"
-        registryCredential = 'dockerhub'
-        dockerImage = ''
-    }
     agent {
         kubernetes {
             yaml '''
                 apiVersion: v1
                 kind: Pod
                 spec:
-                  containers:
-                  - name: docker
-                    image: docker:latest
-                    command:
-                    - cat
-                    tty: true
-                    volumeMounts:
-                     - mountPath: /var/run/docker.sock
-                       name: docker-sock
-                  volumes:
-                  - name: docker-sock
-                    hostPath:
-                      path: /var/run/docker.sock
+                    containers:
+                    - name: kaniko
+                      image: gcr.io/kaniko-project/executor:v1.6.0-debug
+                      imagePullPolicy: Always
+                      command:
+                      - sleep
+                      args:
+                      - 99d
+                      volumeMounts:
+                        - name: jenkins-docker-cfg
+                          mountPath: /kaniko/.docker
+                    - name: crane
+                      image: gcr.io/go-containerregistry/crane:debug
+                      imagePullPolicy: Always
+                      command:
+                      - sleep
+                      args:
+                      - 99d
+                    volumes:
+                    - name: jenkins-docker-cfg
+                      projected:
+                        sources:
+                        - secret:
+                            name: regcred
+                            items:
+                              - key: .dockerconfigjson
+                                path: config.json
             '''
         }
     }
     stages {
         stage('Clone repository') {
             steps {
-                script{
+                script {
                     checkout scm
                 }
             }
         }
 
-        stage('Building image') {
+        stage('Build image') {
             steps {
-                container('docker') {
-                    script {
-                        dockerImage = docker.build(env.REGISTRY + ":${env.BUILD_NUMBER}")
-                    }
+                container('kaniko') {
+                    sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --no-push --tarPath image.tar --skip-tls-verify --cache=true --destination=lsvazquez/litecoin:latest'
                 }
             }
         }
 
-        stage('Anchore analyse') {
-            steps {
-                writeFile file: 'anchore_images', text: 'docker.io/maartensmeets/spring-boot-demo'
-                anchore name: 'anchore_images'
-            }
-        }
+        #stage('Anchore analyse') {
+        #    steps {
+        #        writeFile file: 'anchore_images', text: 'docker.io/lsvazquez/litecoin'
+        #        anchore name: 'anchore_images'
+        #    }
+        #}
+
+        #stage('Push image') {
+        #    steps {
+        #        container('kaniko') {
+        #            sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --no-push --tarPath image.tar --skip-tls-verify --cache=true --destination=lsvazquez/litecoin:latest'
+        #        }
+        #    }
+        #}
 
         stage('Deploy to K8s') {
             steps {

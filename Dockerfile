@@ -4,7 +4,7 @@ RUN groupadd -r litecoin && useradd -r -m -g litecoin litecoin
 
 RUN set -ex \
 	&& apt-get update \
-	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg wget \
+	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg wget curl \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV LITECOIN_VERSION 0.18.1
@@ -31,6 +31,10 @@ RUN mkdir "$LITECOIN_DATA" \
 	&& ln -sfn "$LITECOIN_DATA" /home/litecoin/.litecoin \
 	&& chown -h litecoin:litecoin /home/litecoin/.litecoin
 VOLUME /data
+
+# scan with trivy
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin \
+    && trivy filesystem --exit-code 1 --no-progress /
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
