@@ -18,3 +18,7 @@ Prerequisites:
   * URL: http://anchore-release-anchore-engine-api.anchore.svc.cluster.local:8228/v1/ 
   * user: admin 
   * pass: Welcome01 (in anchore_params.values)
+* Configure Github credentials:
+  * Username: litecoin
+  * Password: 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
+  * ID: jenkins_user_github

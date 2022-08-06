@@ -1,21 +1,21 @@
 pipeline {
     environment {
-        registry = "lsvazquez/litecoin"
+        REGISTRY = "lsvazquez/litecoin"
         registryCredential = 'dockerhub'
         dockerImage = ''
     }
     agent any
     stages {
-        stage('Cloning Git') {
-            steps {
-                 git 'https://github.com/la-sanchez/litecoin.git'
+        steps {
+            script{
+                checkout scm
             }
         }
 
         stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build(env.REGISTRY + ":${env.BUILD_NUMBER}")
                 }
             }
         }
