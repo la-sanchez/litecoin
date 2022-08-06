@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litecoin
+  labels:
+    app: litecoin
+spec:
+  ports:
+  - port: 9332
+    name: litecoin-port
+  clusterIP: None
+  selector:
+    app: litecoin
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: litecoin
+spec:
+  serviceName: "litecoin"
+  selector:
+    matchLabels:
+      app: litecoin
+  template:
+    metadata:
+      labels:
+        app: litecoin
+    spec:
+      containers:
+      - name: litecoin
+        image: lsvazquez/litecoin:latest
+        resources:
+          requests:
+            memory: "2048Mi"
+            cpu: "100m"
+          limits:
+            memory: "4096Mi"
+            cpu: "900m"
+        ports:
+        - containerPort: 9332
+          name: litecoin-port
+        volumeMounts:
+        - name: litecoin-data
+          mountPath: /home/app/.litecoin
+  volumeClaimTemplates:
+  - metadata:
+      name: litecoin-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
