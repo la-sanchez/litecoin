@@ -9,5 +9,5 @@
  kubectl create secret -n jenkins docker-registry dockercred \
     --docker-server=https://index.docker.io/v1/ \
     --docker-username=lsvazquez \
-    --docker-password=dckr_pat_zHeGlnrUcUmD_YI60oTWe39H4KE\
+    --docker-password=dckr_pat_7Uss7PQOPOEjs2YRNRTW5rfyEkQ \
     --docker-email=lsvazquez@outlook.com
