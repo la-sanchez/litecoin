@@ -1,9 +1,0 @@
----
-postgresql:
-  postgresPassword: Welcome01
-  persistence:
-   size: 10Gi
-
-anchoreGlobal:
-  defaultAdminPassword: Welcome01
-  defaultAdminEmail: maarten.smeets@amis.nl
