@@ -38,6 +38,7 @@ VOLUME /data
 #    && trivy filesystem --exit-code 1 --no-progress /
 
 COPY entrypoint.sh /entrypoint.sh
+RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 9332
