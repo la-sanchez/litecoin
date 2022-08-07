@@ -1,5 +1,6 @@
 FROM debian:stretch-slim
 
+# create a user to be used instead of root
 RUN groupadd -r litecoin && useradd -r -m -g litecoin litecoin
 
 RUN set -ex \
