@@ -1,4 +1,7 @@
 pipeline {
+    parameters {
+        string(name: 'DOCKERHUB_TOKEN', defaultValue: '', description: 'Docker hub token')
+    }
     agent {
         kubernetes {
             yaml '''
@@ -73,7 +76,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     container('crane') {
-                        sh 'crane auth login -u lsvazquez -p dckr_pat_7Uss7PQOPOEjs2YRNRTW5rfyEkQ docker.io'
+                        sh "crane auth login -u lsvazquez -p ${params.DOCKERHUB_TOKEN} docker.io"
                         sh 'crane push image.tar docker.io/lsvazquez/litecoin:latest'
                     }
                 }
